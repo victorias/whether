@@ -10,12 +10,21 @@ import {
 const Header = () => {
   const selectedTimeOfDay = useWhetherStore((state) => state.timeOfDay);
   const selectedDayOfWeek = useWhetherStore((state) => state.dayOfWeek);
+  const selectedLocation = useWhetherStore((state) => state.location);
 
   const setSelectedDayOfWeek = useWhetherStore((state) => state.setDayOfWeek);
   const setSelectedTimeOfDay = useWhetherStore((state) => state.setTimeOfDay);
+  const setSelectedLocation = useWhetherStore((state) => state.setLocation);
   return (
     <>
-      <TextInput />
+      <TextInput
+        initialValue={selectedLocation}
+        onBlur={(location) => {
+          setSelectedLocation(location);
+        }}
+        onKeyPressEnter={(location) => setSelectedLocation(location)}
+        placeholder="Enter a city name.."
+      />
       <Dropdown
         options={DayOfWeekOptions}
         onOptionSelect={(option) => setSelectedDayOfWeek(option)}

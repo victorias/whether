@@ -16,6 +16,7 @@ import {
 import { Line } from "react-chartjs-2";
 import resolveConfig from "tailwindcss/resolveConfig";
 import tailwindConfig from "@/tailwind.config";
+import { useWhetherStore } from "@/stores/useWhetherStore";
 
 ChartJS.register(
   CategoryScale,
@@ -56,7 +57,9 @@ const fetchWeatherData = async (
   onDate: string
 ): Promise<VisualCrossingResponse> => {
   const res = await fetch(
-    `https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${location}/${onDate}/?unitGroup=us&key=WAAK2EVX4LK7SB5FSJXLSWTVK&contentType=json&include=hours`,
+    `https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${encodeURIComponent(
+      location
+    )}/${onDate}/?unitGroup=us&key=WAAK2EVX4LK7SB5FSJXLSWTVK&contentType=json&include=hours`,
     {
       method: "GET",
     }
@@ -111,7 +114,7 @@ const WeatherChart = ({
 };
 
 const Weather = () => {
-  const location = `Dolores%20Park`;
+  const location = useWhetherStore((state) => state.location);
 
   const getNextDayOfWeek = () => {
     // Get the current date
