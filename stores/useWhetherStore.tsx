@@ -19,9 +19,12 @@ interface WhetherStore {
   location: string;
   timeOfDay: TimeOfDay;
   dayOfWeek: DayOfWeek;
+  offset: number;
   setLocation: (location: string) => void;
   setTimeOfDay: (timeOfDay: TimeOfDay) => void;
   setDayOfWeek: (dayOfWeek: DayOfWeek) => void;
+  increaseOffset: () => void;
+  decreaseOffset: () => void;
 }
 
 export const useWhetherStore = create<WhetherStore>()(
@@ -30,9 +33,12 @@ export const useWhetherStore = create<WhetherStore>()(
       location: "Dolores Park",
       timeOfDay: "Afternoon",
       dayOfWeek: "Friday",
-      setLocation: (location) => set((state) => ({ location })),
-      setTimeOfDay: (timeOfDay) => set((state) => ({ timeOfDay })),
+      offset: 1,
+      setLocation: (location) => set(() => ({ location })),
+      setTimeOfDay: (timeOfDay) => set(() => ({ timeOfDay })),
       setDayOfWeek: (dayOfWeek) => set(() => ({ dayOfWeek })),
+      increaseOffset: () => set((state) => ({ offset: state.offset + 1 })),
+      decreaseOffset: () => set((state) => ({ offset: state.offset - 1 })),
     }),
     {
       name: "whether-store",

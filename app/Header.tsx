@@ -16,7 +16,7 @@ const Header = () => {
   const setSelectedTimeOfDay = useWhetherStore((state) => state.setTimeOfDay);
   const setSelectedLocation = useWhetherStore((state) => state.setLocation);
   return (
-    <>
+    <section className="flex">
       <TextInput
         initialValue={selectedLocation}
         onBlur={(location) => {
@@ -35,7 +35,7 @@ const Header = () => {
         onOptionSelect={(option) => setSelectedTimeOfDay(option)}
         displayedText={selectedTimeOfDay}
       />
-    </>
+    </section>
   );
 };
 

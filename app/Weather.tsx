@@ -113,10 +113,15 @@ const WeatherChart = ({
   );
 };
 
-const Weather = () => {
-  const location = useWhetherStore((state) => state.location);
+interface WeatherProps {
+  isFuture: boolean; // If this component represents the next most date, this prop is false. If it represents some time in the future, this prop is true
+}
 
-  const getNextDayOfWeek = () => {
+const Weather = ({ isFuture }: WeatherProps) => {
+  const location = useWhetherStore((state) => state.location);
+  const offset = useWhetherStore((state) => state.offset);
+
+  const getNextDate = () => {
     // Get the current date
     const currentDate: Date = new Date();
 
@@ -129,19 +134,24 @@ const Weather = () => {
     let daysToAdd: number = 0;
 
     // Iterate from the start of the week to find the next occurrence of the target day
+    let nextDate: Date;
     while (true) {
-      const nextDate: Date = add(startOfCurrentWeek, { days: daysToAdd });
+      nextDate = add(startOfCurrentWeek, { days: daysToAdd });
       const dayName: string = format(nextDate, "EEEE");
 
       if (dayName === targetDay) {
-        return nextDate;
+        if (isFuture) return nextDate;
+        break;
       }
 
       daysToAdd++;
     }
+
+    // Add offset * 7 to get the future date
+    return add(nextDate, { days: 7 * offset });
   };
 
-  const nextDate = getNextDayOfWeek();
+  const nextDate = getNextDate();
   const formattedNextDate = format(nextDate, "yyyy-MM-dd");
 
   const { isLoading, isError, data, error } = useQuery({
