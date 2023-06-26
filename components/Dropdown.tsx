@@ -1,21 +1,22 @@
 // needs to mark as client component because we useState here
 "use client";
-import { useState } from "react";
+import { useEffect, useState, useRef } from "react";
 
 type Option = string;
 
 interface DropdownProps {
   options: Option[];
   onOptionSelect: (selectedOption: Option) => void;
-  selectedOption: Option;
+  displayedText: Option;
 }
 
 const Dropdown = ({
   options,
   onOptionSelect,
-  selectedOption,
+  displayedText,
 }: DropdownProps) => {
   const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
@@ -26,8 +27,25 @@ const Dropdown = ({
     setIsOpen(false);
   };
 
+  const handleClickOutside = (event: MouseEvent) => {
+    if (
+      dropdownRef.current &&
+      !dropdownRef.current.contains(event.target as Node)
+    ) {
+      setIsOpen(false);
+    }
+  };
+
+  useEffect(() => {
+    window.addEventListener("click", handleClickOutside);
+
+    return () => {
+      window.removeEventListener("click", handleClickOutside);
+    };
+  }, []);
+
   return (
-    <div className="relative inline-block text-left">
+    <div className="relative inline-block text-left" ref={dropdownRef}>
       <div>
         <button
           type="button"
@@ -37,7 +55,7 @@ const Dropdown = ({
           aria-expanded={isOpen}
           aria-haspopup="true"
         >
-          {selectedOption}
+          {displayedText}
           {/* @TODO: replace this icon */}
           <svg
             className="-mr-1 ml-2 h-5 w-5"
