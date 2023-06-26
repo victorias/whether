@@ -2,10 +2,8 @@
 "use client";
 import { useEffect, useState, useRef } from "react";
 
-type Option = string;
-
-interface DropdownProps {
-  options: Option[];
+interface DropdownProps<Option> {
+  options: readonly Option[];
   onOptionSelect: (selectedOption: Option) => void;
   displayedText: Option;
 }
@@ -14,7 +12,7 @@ const Dropdown = ({
   options,
   onOptionSelect,
   displayedText,
-}: DropdownProps) => {
+}: DropdownProps<any>) => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
