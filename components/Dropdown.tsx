@@ -6,13 +6,17 @@ import { ChevronDown } from "react-feather";
 interface DropdownProps<Option> {
   options: readonly Option[];
   onOptionSelect: (selectedOption: Option) => void;
-  displayedText: Option;
+  displayedText: any;
+  hideCaret?: boolean;
+  position?: "left" | "right";
 }
 
 const Dropdown = ({
   options,
   onOptionSelect,
   displayedText,
+  hideCaret = false,
+  position = "left",
 }: DropdownProps<any>) => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -55,12 +59,16 @@ const Dropdown = ({
           aria-haspopup="true"
         >
           {displayedText}
-          <ChevronDown color="black" />
+          {!hideCaret && <ChevronDown color="black" />}
         </button>
       </div>
 
       {isOpen && (
-        <div className="z-50 origin-top-right absolute left-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
+        <div
+          className={`z-50 origin-top-right absolute ${
+            position === "left" ? "left-0" : "right-0"
+          } mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5`}
+        >
           <div
             className="py-1"
             role="menu"

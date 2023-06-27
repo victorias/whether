@@ -1,3 +1,6 @@
+"use client";
+
+import Dropdown from "@/components/Dropdown";
 import Header from "@/weather/Header";
 import WeatherContainer from "@/weather/WeatherContainer";
 import { Menu } from "react-feather";
@@ -8,7 +11,13 @@ export default function Home() {
       <header className="flex justify-between p-4">
         <div className="text-sm text-red-400">whether.io</div>
         <div className="md:hidden">
-          <Menu />
+          <Dropdown
+            displayedText={<Menu />}
+            options={["Help", "Sign Out"]}
+            onOptionSelect={() => null}
+            hideCaret
+            position="right"
+          />
         </div>
         <div className="text-sm hidden md:flex">
           <button>Help</button>
