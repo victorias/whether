@@ -17,7 +17,7 @@ const TextInput = ({
   return (
     <input
       type="text"
-      className="appearance-none py-2 px-4 focus:outline-none flex w-200"
+      className="appearance-none py-2 px-4 focus:outline-none flex w-200 font-bold"
       placeholder={placeholder}
       value={value}
       onChange={(event) => {

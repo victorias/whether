@@ -78,7 +78,7 @@ const chartOptions = {
     },
     x: {
       grid: {
-        // display: false,
+        display: false,
       },
       ticks: {
         font: ({ index }: { index: number }) => {
@@ -268,7 +268,7 @@ const Weather = ({ useOffset }: WeatherProps) => {
 
   return (
     <div className="flex flex-col w-full flex-1 items-stretch">
-      <h2 className={`text-lg ${!useOffset ? "text-red-400" : ""}`}>
+      <h2 className={`text-lg font-bold  ${!useOffset ? "text-red-400" : ""}`}>
         {!useOffset
           ? format(nextDate, "'This' eeee 'the' do")
           : format(nextDate, "'Next' eeee 'the' do")}
@@ -298,6 +298,7 @@ const Weather = ({ useOffset }: WeatherProps) => {
       )}
 
       {data && <WeatherChart responseData={data} />}
+      <div className="text-sm uppercase text-center">{timeOfDay}</div>
     </div>
   );
 };
