@@ -1,5 +1,5 @@
-import Header from "./Header";
-import Weather from "./Weather";
+import Header from "@/weather/Header";
+import WeatherContainer from "@/weather/WeatherContainer";
 
 async function getInitialCurrentWeatherData() {
   const location = `Dolores%20Park`;
@@ -16,18 +16,7 @@ export default function Home() {
   return (
     <main className="flex flex-col">
       <Header />
-      <section className="flex justify-center">
-        <div className="mx-auto">
-          <div className="flex justify-center">
-            <div className="w-1/2 p-4">
-              <Weather isFuture={false} />
-            </div>
-            <div className="hidden md:block w-1/2 p-4">
-              <Weather isFuture />
-            </div>
-          </div>
-        </div>
-      </section>
+      <WeatherContainer />
     </main>
   );
 }

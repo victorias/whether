@@ -1,8 +1,6 @@
 "use client";
-import { Hour, VisualCrossingResponse } from "@/api/types";
-import { QueryFunctionContext, useQuery } from "@tanstack/react-query";
+import { VisualCrossingResponse } from "@/api/types";
 import { startOfWeek, add, format } from "date-fns";
-import { useMemo } from "react";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -17,6 +15,7 @@ import { Line } from "react-chartjs-2";
 import resolveConfig from "tailwindcss/resolveConfig";
 import tailwindConfig from "@/tailwind.config";
 import { useWhetherStore } from "@/stores/useWhetherStore";
+import useSWR from "swr";
 
 ChartJS.register(
   CategoryScale,
@@ -59,7 +58,7 @@ const fetchWeatherData = async (
   const res = await fetch(
     `https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${encodeURIComponent(
       location
-    )}/${onDate}/?unitGroup=us&key=WAAK2EVX4LK7SB5FSJXLSWTVK&contentType=json&include=hours`,
+    )}/${onDate}/?unitGroup=us&include=stats%2Cobs%2Cremote%2Cstatsfcst%2Cfcst%2Chours&key=WAAK2EVX4LK7SB5FSJXLSWTVK&contentType=json`,
     {
       method: "GET",
     }
@@ -77,6 +76,9 @@ const WeatherChart = ({
 }: {
   responseData: VisualCrossingResponse;
 }) => {
+  if (responseData.days[0].hours == null) {
+    return <div>no data</div>;
+  }
   const labels = responseData.days[0].hours.map((hour) => hour.datetime);
 
   return (
@@ -114,10 +116,10 @@ const WeatherChart = ({
 };
 
 interface WeatherProps {
-  isFuture: boolean; // If this component represents the next most date, this prop is false. If it represents some time in the future, this prop is true
+  useOffset: boolean;
 }
 
-const Weather = ({ isFuture }: WeatherProps) => {
+const Weather = ({ useOffset }: WeatherProps) => {
   const location = useWhetherStore((state) => state.location);
   const offset = useWhetherStore((state) => state.offset);
 
@@ -140,7 +142,7 @@ const Weather = ({ isFuture }: WeatherProps) => {
       const dayName: string = format(nextDate, "EEEE");
 
       if (dayName === targetDay) {
-        if (isFuture) return nextDate;
+        if (!useOffset) return nextDate;
         break;
       }
 
@@ -154,23 +156,36 @@ const Weather = ({ isFuture }: WeatherProps) => {
   const nextDate = getNextDate();
   const formattedNextDate = format(nextDate, "yyyy-MM-dd");
 
-  const { isLoading, isError, data, error } = useQuery({
-    queryKey: ["weather", { location, formattedNextDate }],
-    queryFn: () => fetchWeatherData(location, formattedNextDate),
-  });
+  // const { isLoading, isError, data, error } = useQuery({
+  //   queryKey: ["weather", { location, formattedNextDate }],
+  //   queryFn: () => fetchWeatherData(location, formattedNextDate),
+  // });
+  const { data, error, isLoading } = useSWR(
+    `${location}+${formattedNextDate}`,
+    () => fetchWeatherData(location, formattedNextDate)
+  );
 
   if (isLoading) {
     return <span>Loading...</span>;
   }
-  if (isError) {
-    return <span>Error: {error.message}</span>;
+  if (error) {
+    return (
+      <span>
+        Error: {error instanceof Error ? error.message : "Unhandled Exception"}
+      </span>
+    );
   }
+
   console.log(data);
 
   return (
-    <div className="h-screen">
-      {data.address}
-      <WeatherChart responseData={data} />
+    <div className="flex-col">
+      <h2 className="text-lg">
+        {!useOffset
+          ? format(nextDate, "'This' eeee 'the' do")
+          : format(nextDate, "'Next' eeee 'the' do")}
+      </h2>
+      {data && <WeatherChart responseData={data} />}
     </div>
   );
 };
