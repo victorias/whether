@@ -81,7 +81,7 @@ const chartOptions = {
         // display: false,
       },
       ticks: {
-        font: ({ tick, index }) => {
+        font: ({ index }: { index: number }) => {
           if (index > 1 && index < 8) {
             return { weight: "bold" };
           }
@@ -205,26 +205,22 @@ const Weather = ({ useOffset }: WeatherProps) => {
   const location = useWhetherStore((state) => state.location);
   const offset = useWhetherStore((state) => state.offset);
   const timeOfDay = useWhetherStore((state) => state.timeOfDay);
+  const dayOfWeek = useWhetherStore((state) => state.dayOfWeek);
 
   const getNextDate = () => {
     // Get the current date
     const currentDate: Date = new Date();
 
-    // Find the start of the week (Sunday)
-    const startOfCurrentWeek: Date = startOfWeek(currentDate);
-
-    const targetDay: string = "Friday";
-
     // Initialize a counter for adding days
     let daysToAdd: number = 0;
 
-    // Iterate from the start of the week to find the next occurrence of the target day
+    // Iterate from the current day to find the next occurrence of the target day
     let nextDate: Date;
     while (true) {
-      nextDate = add(startOfCurrentWeek, { days: daysToAdd });
+      nextDate = add(currentDate, { days: daysToAdd });
       const dayName: string = format(nextDate, "EEEE");
 
-      if (dayName === targetDay) {
+      if (dayName === dayOfWeek) {
         if (!useOffset) return nextDate;
         break;
       }
