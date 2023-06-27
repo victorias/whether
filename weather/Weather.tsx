@@ -1,6 +1,6 @@
 "use client";
 import { VisualCrossingResponse } from "@/api/types";
-import { startOfWeek, add, format } from "date-fns";
+import { startOfWeek, add, format, fromUnixTime, getHours } from "date-fns";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -71,15 +71,42 @@ const fetchWeatherData = async (
   return res.json();
 };
 
+const timeOfDayMap = {
+  Morning: [8, 12],
+  Afternoon: [12, 17],
+  Evening: [17, 21],
+};
+
 const WeatherChart = ({
   responseData,
 }: {
   responseData: VisualCrossingResponse;
 }) => {
+  const timeOfDay = useWhetherStore((state) => state.timeOfDay);
+
   if (responseData.days[0].hours == null) {
     return <div>no data</div>;
   }
-  const labels = responseData.days[0].hours.map((hour) => hour.datetime);
+
+  // Slice data set to be Time of Day +/- 2 hours
+  const slicedData = responseData.days[0].hours.filter((hour) => {
+    const h = getHours(fromUnixTime(hour.datetimeEpoch));
+    return (
+      h > timeOfDayMap[timeOfDay][0] - 3 && h < timeOfDayMap[timeOfDay][1] + 3
+    );
+  });
+
+  const labels = slicedData.map((hour) => {
+    const h = getHours(fromUnixTime(hour.datetimeEpoch));
+    // Determine if it's AM or PM
+    const period = h >= 12 ? "PM" : "AM";
+
+    // Convert to 12-hour format
+    const convertedHours = h % 12 || 12;
+
+    // Return the converted time
+    return `${convertedHours} ${period}`;
+  });
 
   return (
     <Line
@@ -89,14 +116,14 @@ const WeatherChart = ({
         datasets: [
           {
             label: "Temperature (°F)",
-            data: responseData.days[0].hours.map((hour) => hour.temp),
+            data: slicedData.map((hour) => hour.temp),
             cubicInterpolationMode: "default",
             borderColor: fullConfig.theme?.colors?.red["200"],
             backgroundColor: fullConfig.theme?.colors?.red["200"],
           },
           {
             label: "Windspeed (mph)",
-            data: responseData.days[0].hours.map((hour) => hour.windspeed),
+            data: slicedData.map((hour) => hour.windspeed),
             cubicInterpolationMode: "default",
             borderColor: fullConfig.theme?.colors.green["200"],
             backgroundColor: fullConfig.theme?.colors.green["200"],
@@ -105,7 +132,7 @@ const WeatherChart = ({
           {
             label: "Precipitation",
             cubicInterpolationMode: "default",
-            data: responseData.days[0].hours.map((hour) => hour.precip),
+            data: slicedData.map((hour) => hour.precip),
             borderColor: fullConfig.theme?.colors.blue["200"],
             backgroundColor: fullConfig.theme?.colors.blue["200"],
           },

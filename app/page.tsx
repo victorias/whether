@@ -14,7 +14,7 @@ async function getInitialCurrentWeatherData() {
 
 export default function Home() {
   return (
-    <main className="flex flex-col">
+    <main className="flex flex-col h-screen">
       <Header />
       <WeatherContainer />
     </main>
