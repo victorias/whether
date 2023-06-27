@@ -6,7 +6,7 @@ export default function Home() {
   return (
     <main className="flex flex-col">
       <header className="flex justify-between p-4">
-        <div className="text-sm">whether.io</div>
+        <div className="text-sm text-red-400">whether.io</div>
         <div className="md:hidden">
           <Menu />
         </div>

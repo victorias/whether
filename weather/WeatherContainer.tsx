@@ -14,17 +14,17 @@ const WeatherContainer = () => {
     <section className="flex justify-center w-full">
       <div className="relative flex justify-center items-center w-screen">
         <div className="absolute left-0">
-          {offset > 2 && (
+          {offset >= 2 && (
             <IconButton onClick={decreaseOffset}>
               <ChevronLeft color="black" />
             </IconButton>
           )}
         </div>
-        <div className="flex justify-center flex-1">
-          <div className="p-4 flex-1 flex">
+        <div className="flex justify-center flex-1 flex-col md:flex-row">
+          <div className="p-4 md:flex-1 flex">
             <Weather useOffset={false} />
           </div>
-          <div className="hidden p-4 flex-1 md:flex">
+          <div className="p-4 md:flex-1 flex">
             <Weather useOffset />
           </div>
         </div>

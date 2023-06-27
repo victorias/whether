@@ -48,7 +48,7 @@ const Dropdown = ({
       <div>
         <button
           type="button"
-          className="inline-flex justify-center w-full px-4 py-2 text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
+          className="inline-flex justify-center w-full px-4 py-2 text-sm font-medium bg-white hover:bg-gray-50"
           id="dropdown-menu-button"
           onClick={toggleDropdown}
           aria-expanded={isOpen}
@@ -70,7 +70,7 @@ const Dropdown = ({
             {options.map((option, index) => (
               <button
                 key={index}
-                className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+                className="block w-full text-left px-4 py-2 text-sm hover:bg-gray-100 hover:text-gray-900"
                 role="menuitem"
                 onClick={() => handleOptionSelect(option)}
               >
