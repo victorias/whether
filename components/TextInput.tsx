@@ -1,4 +1,3 @@
-import clsx from "clsx";
 import { useState } from "react";
 
 interface TextInputProps {
@@ -18,7 +17,7 @@ const TextInput = ({
   return (
     <input
       type="text"
-      className="appearance-none bg-gray-100 border border-gray-300 rounded-md py-2 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+      className="appearance-none py-2 px-4 focus:outline-none flex w-200"
       placeholder={placeholder}
       value={value}
       onChange={(event) => {

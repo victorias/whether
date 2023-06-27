@@ -1,22 +1,24 @@
 import Header from "@/weather/Header";
 import WeatherContainer from "@/weather/WeatherContainer";
-
-// async function getInitialCurrentWeatherData() {
-//   const location = `Dolores%20Park`;
-//   const response = await fetch(
-//     `https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${location}/${date1}/?unitGroup=us&key=WAAK2EVX4LK7SB5FSJXLSWTVK&contentType=json`,
-//     {
-//       method: "GET",
-//       headers: {},
-//     }
-//   );
-// }
+import { Menu } from "react-feather";
 
 export default function Home() {
   return (
     <main className="flex flex-col">
-      <Header />
-      <WeatherContainer />
+      <header className="flex justify-between p-4">
+        <div className="text-sm">whether.io</div>
+        <div className="md:hidden">
+          <Menu />
+        </div>
+        <div className="text-sm hidden md:flex">
+          <button>Help</button>
+          <button className="ml-3">Sign Out</button>
+        </div>
+      </header>
+      <div className="flex flex-col md:w-3/4 self-center">
+        <Header />
+        <WeatherContainer />
+      </div>
     </main>
   );
 }

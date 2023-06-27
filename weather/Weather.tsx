@@ -42,6 +42,7 @@ const fullConfig = resolveConfig(tailwindConfig);
 
 const chartOptions = {
   responsive: true,
+  maintainAspectRatio: false,
   plugins: {
     legend: {
       position: "top" as const,
@@ -78,6 +79,13 @@ const chartOptions = {
     x: {
       grid: {
         // display: false,
+      },
+      ticks: {
+        font: ({ tick, index }) => {
+          if (index > 1 && index < 8) {
+            return { weight: "bold" };
+          }
+        },
       },
     },
   },
@@ -141,7 +149,7 @@ const WeatherChart = ({
   });
 
   return (
-    <div style={{ flex: "0 0 auto" }} className="w-full h-96">
+    <div style={{ flex: "0 0 auto", height: "500px" }} className="w-full">
       <Line
         options={chartOptions}
         data={{
@@ -163,7 +171,7 @@ const WeatherChart = ({
             },
 
             {
-              label: "Precipitation",
+              label: "Precipitation (inches)",
               cubicInterpolationMode: "default",
               data: slicedData.map((hour) => hour.precip),
               borderColor: fullConfig.theme?.colors.blue["200"],

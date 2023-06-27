@@ -11,7 +11,7 @@ const WeatherContainer = () => {
   const decreaseOffset = useWhetherStore((state) => state.decreaseOffset);
 
   return (
-    <section className="flex justify-center w-screen">
+    <section className="flex justify-center w-full">
       <div className="relative flex justify-center items-center w-screen">
         <div className="absolute left-0">
           {offset > 2 && (
