@@ -16,6 +16,15 @@ import resolveConfig from "tailwindcss/resolveConfig";
 import tailwindConfig from "@/tailwind.config";
 import { useWhetherStore } from "@/stores/useWhetherStore";
 import useSWR from "swr";
+import {
+  Cloud,
+  CloudRain,
+  CloudSnow,
+  Moon,
+  Sun,
+  Umbrella,
+  Wind,
+} from "react-feather";
 
 ChartJS.register(
   CategoryScale,
@@ -58,7 +67,7 @@ const fetchWeatherData = async (
   const res = await fetch(
     `https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${encodeURIComponent(
       location
-    )}/${onDate}/?unitGroup=us&include=stats%2Cobs%2Cremote%2Cstatsfcst%2Cfcst%2Chours&key=WAAK2EVX4LK7SB5FSJXLSWTVK&contentType=json`,
+    )}/${onDate}/?unitGroup=us&include=stats%2Cobs%2Cremote%2Cstatsfcst%2Cfcst%2Chours&key=TBLDFJEDDJHYPBVMJB3NHVHBG&contentType=json`,
     {
       method: "GET",
     }
@@ -142,6 +151,18 @@ const WeatherChart = ({
   );
 };
 
+const weatherIconMap = {
+  snow: <CloudSnow size={48} />,
+  rain: <CloudRain size={48} />,
+  fog: <Cloud size={48} />,
+  wind: <Wind size={48} />,
+  cloudy: <Cloud size={48} />,
+  "partly-cloudy-day": <Sun size={48} />,
+  "partly-cloudy-night": <Cloud size={48} />,
+  "clear-day": <Sun size={48} />,
+  "clear-night": <Moon size={48} />,
+};
+
 interface WeatherProps {
   useOffset: boolean;
 }
@@ -149,6 +170,7 @@ interface WeatherProps {
 const Weather = ({ useOffset }: WeatherProps) => {
   const location = useWhetherStore((state) => state.location);
   const offset = useWhetherStore((state) => state.offset);
+  const timeOfDay = useWhetherStore((state) => state.timeOfDay);
 
   const getNextDate = () => {
     // Get the current date
@@ -183,13 +205,14 @@ const Weather = ({ useOffset }: WeatherProps) => {
   const nextDate = getNextDate();
   const formattedNextDate = format(nextDate, "yyyy-MM-dd");
 
-  // const { isLoading, isError, data, error } = useQuery({
-  //   queryKey: ["weather", { location, formattedNextDate }],
-  //   queryFn: () => fetchWeatherData(location, formattedNextDate),
-  // });
   const { data, error, isLoading } = useSWR(
     `${location}+${formattedNextDate}`,
-    () => fetchWeatherData(location, formattedNextDate)
+    () => fetchWeatherData(location, formattedNextDate),
+    {
+      revalidateIfStale: false,
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+    }
   );
 
   if (isLoading) {
@@ -203,15 +226,47 @@ const Weather = ({ useOffset }: WeatherProps) => {
     );
   }
 
-  console.log(data);
+  // use the middle of the time of day to show the data
+  // this could also be the general day data.. but there becomes an odd inconsistency
+  // when the overall day forecast is actually significantly different than the
+  // time of day forecast
+  const timepoint = Math.round(
+    (timeOfDayMap[timeOfDay][1] - timeOfDayMap[timeOfDay][0]) / 2
+  );
+
+  const hour = data?.days[0].hours[timepoint];
 
   return (
     <div className="flex-col">
-      <h2 className="text-lg">
+      <h2 className={`text-lg ${!useOffset ? "text-red-400" : ""}`}>
         {!useOffset
           ? format(nextDate, "'This' eeee 'the' do")
           : format(nextDate, "'Next' eeee 'the' do")}
       </h2>
+      {hour && (
+        <div className="flex">
+          {weatherIconMap[hour.icon as keyof typeof weatherIconMap]}
+          <div className="flex-col ml-2">
+            <div className="text-base">
+              {hour.conditions} {hour.temp}°F
+            </div>
+            <div className="text-sm flex items-center">
+              <Wind />
+              <div className="ml-2">winds {hour.windspeed}mph</div>
+            </div>
+
+            <div className="text-sm flex items-center">
+              <Umbrella />
+              <div className="ml-2">
+                {hour.precipprob === 0
+                  ? "no rain"
+                  : `${hour.precipprob}% chance of rain`}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {data && <WeatherChart responseData={data} />}
     </div>
   );
