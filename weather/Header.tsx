@@ -31,7 +31,7 @@ const Header = () => {
           placeholder="Enter a city name.."
         />
       </div>
-      <div className="flex align-center mt-2 md:mt-0">
+      <div className="flex align-center">
         <div className="flex align-center">
           <div className="py-2">
             <Clock color="black" />

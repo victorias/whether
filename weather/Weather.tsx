@@ -149,7 +149,7 @@ const WeatherChart = ({
   });
 
   return (
-    <div style={{ flex: "0 0 auto", height: "500px" }} className="w-full">
+    <div style={{ flex: "0 0 auto", height: "500px" }} className="w-full mt-4">
       <Line
         options={chartOptions}
         data={{
@@ -268,7 +268,9 @@ const Weather = ({ useOffset }: WeatherProps) => {
 
   return (
     <div className="flex flex-col w-full flex-1 items-stretch">
-      <h2 className={`text-lg font-bold  ${!useOffset ? "text-red-400" : ""}`}>
+      <h2
+        className={`text-lg font-bold mb-1 ${!useOffset ? "text-red-400" : ""}`}
+      >
         {!useOffset
           ? format(nextDate, "'This' eeee 'the' do")
           : format(nextDate, "'Next' eeee 'the' do")}
@@ -277,10 +279,10 @@ const Weather = ({ useOffset }: WeatherProps) => {
         <div className="flex">
           {weatherIconMap[hour.icon as keyof typeof weatherIconMap]}
           <div className="flex-col ml-2">
-            <div className="text-base">
+            <div className="text-base mb-1">
               {hour.conditions} {hour.temp}°F
             </div>
-            <div className="text-sm flex items-center">
+            <div className="text-sm flex items-center mb-1">
               <Wind />
               <div className="ml-2">winds {hour.windspeed}mph</div>
             </div>
