@@ -11,6 +11,7 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
+import annotationPlugin from "chartjs-plugin-annotation";
 import { Line } from "react-chartjs-2";
 import resolveConfig from "tailwindcss/resolveConfig";
 import tailwindConfig from "@/tailwind.config";
@@ -33,8 +34,11 @@ ChartJS.register(
   LineElement,
   Title,
   Tooltip,
-  Legend
+  Legend,
+  annotationPlugin
 );
+
+const fullConfig = resolveConfig(tailwindConfig);
 
 const chartOptions = {
   response: true,
@@ -44,6 +48,27 @@ const chartOptions = {
     },
     title: {
       display: false,
+    },
+    annotation: {
+      annotations: {
+        left: {
+          type: "line",
+          xMin: 2,
+          xMax: 2,
+          borderColor: "rgb(0,0, 0)",
+          borderWidth: 2,
+          borderDash: [3],
+        },
+        right: {
+          type: "line",
+          xMin: 7,
+          xMax: 7,
+          borderColor: "rgb(0, 0, 0)",
+          borderWidth: 2,
+
+          borderDash: [3],
+        },
+      },
     },
   },
   scales: {
@@ -57,8 +82,6 @@ const chartOptions = {
     },
   },
 };
-
-const fullConfig = resolveConfig(tailwindConfig);
 
 const fetchWeatherData = async (
   location: string,
