@@ -11,8 +11,8 @@ const WeatherContainer = () => {
   const decreaseOffset = useWhetherStore((state) => state.decreaseOffset);
 
   return (
-    <section className="flex justify-center flex-grow items-stretch">
-      <div className="relative w-screen flex justify-center items-center">
+    <section className="flex justify-center w-screen">
+      <div className="relative flex justify-center items-center w-screen">
         <div className="absolute left-0">
           {offset > 2 && (
             <IconButton onClick={decreaseOffset}>
@@ -20,11 +20,11 @@ const WeatherContainer = () => {
             </IconButton>
           )}
         </div>
-        <div className="flex-grow flex justify-center">
-          <div className="w-1/2 p-4">
+        <div className="flex justify-center flex-1">
+          <div className="p-4 flex-1 flex">
             <Weather useOffset={false} />
           </div>
-          <div className="hidden md:block w-1/2 p-4">
+          <div className="hidden p-4 flex-1 md:flex">
             <Weather useOffset />
           </div>
         </div>

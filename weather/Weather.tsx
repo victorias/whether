@@ -41,7 +41,7 @@ ChartJS.register(
 const fullConfig = resolveConfig(tailwindConfig);
 
 const chartOptions = {
-  response: true,
+  responsive: true,
   plugins: {
     legend: {
       position: "top" as const,
@@ -141,36 +141,39 @@ const WeatherChart = ({
   });
 
   return (
-    <Line
-      options={chartOptions}
-      data={{
-        labels,
-        datasets: [
-          {
-            label: "Temperature (°F)",
-            data: slicedData.map((hour) => hour.temp),
-            cubicInterpolationMode: "default",
-            borderColor: fullConfig.theme?.colors?.red["200"],
-            backgroundColor: fullConfig.theme?.colors?.red["200"],
-          },
-          {
-            label: "Windspeed (mph)",
-            data: slicedData.map((hour) => hour.windspeed),
-            cubicInterpolationMode: "default",
-            borderColor: fullConfig.theme?.colors.green["200"],
-            backgroundColor: fullConfig.theme?.colors.green["200"],
-          },
+    <div style={{ flex: "0 0 auto" }} className="w-full h-96">
+      <Line
+        options={chartOptions}
+        data={{
+          labels,
+          datasets: [
+            {
+              label: "Temperature (°F)",
+              data: slicedData.map((hour) => hour.temp),
+              cubicInterpolationMode: "default",
+              borderColor: fullConfig.theme?.colors?.red["200"],
+              backgroundColor: fullConfig.theme?.colors?.red["200"],
+            },
+            {
+              label: "Windspeed (mph)",
+              data: slicedData.map((hour) => hour.windspeed),
+              cubicInterpolationMode: "default",
+              borderColor: fullConfig.theme?.colors.green["200"],
+              backgroundColor: fullConfig.theme?.colors.green["200"],
+            },
 
-          {
-            label: "Precipitation",
-            cubicInterpolationMode: "default",
-            data: slicedData.map((hour) => hour.precip),
-            borderColor: fullConfig.theme?.colors.blue["200"],
-            backgroundColor: fullConfig.theme?.colors.blue["200"],
-          },
-        ],
-      }}
-    />
+            {
+              label: "Precipitation",
+              cubicInterpolationMode: "default",
+              data: slicedData.map((hour) => hour.precip),
+              borderColor: fullConfig.theme?.colors.blue["200"],
+              backgroundColor: fullConfig.theme?.colors.blue["200"],
+            },
+          ],
+        }}
+        style={{ maxWidth: "100%" }}
+      />
+    </div>
   );
 };
 
@@ -260,7 +263,7 @@ const Weather = ({ useOffset }: WeatherProps) => {
   const hour = data?.days[0].hours[timepoint];
 
   return (
-    <div className="flex-col">
+    <div className="flex flex-col w-full flex-1 items-stretch">
       <h2 className={`text-lg ${!useOffset ? "text-red-400" : ""}`}>
         {!useOffset
           ? format(nextDate, "'This' eeee 'the' do")
